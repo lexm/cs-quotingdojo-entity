@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "QuotingDojo!";
+}
+
+@foreach(var quote in @ViewBag.quotes)
+{
+    <br>
+    <p>Name: @quote.author.name</p>
+    <p>Quote: @quote.quote</p>
+    <a href="/delete/@quote.quoteid"><button>Delete?</button></a>
+}

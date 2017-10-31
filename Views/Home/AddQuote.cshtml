@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Add Quote";
+}
+@model quoteme.Models.CreateViewModel
+<h2>@ViewData["Title"].</h2>
+<h3>@ViewData["Message"]</h3>
+
+<form asp-controller="Home" asp-action="create" method="POST">
+    <label asp-for="authorid"></label>
+    <select asp-for="authorid">
+        @foreach(var author in @ViewBag.authors)
+        {
+            <option value="@author.authorid">@author.name</option>
+            @author.authorid
+        }
+    </select>
+    <span asp-validation-for="authorid"></span>
+
+    <label asp-for="Quote"></label>
+    <input asp-for="Quote">
+    <span asp-validation-for="Quote"></span>
+    <input type="submit" value="Submit">
+</form>
+
