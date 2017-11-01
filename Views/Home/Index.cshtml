@@ -7,5 +7,14 @@
     <br>
     <p>Name: @quote.author.name</p>
     <p>Quote: @quote.quote</p>
+    <p>Notes: @quote.meta.notes</p>
+    <p>Categories:</p>
+    @foreach(var qcat in @quote.quote_cat)
+    {
+        @if(qcat.category != null)
+        {
+            <p>@qcat.category.name</p>
+        }
+    }
     <a href="/delete/@quote.quoteid"><button>Delete?</button></a>
 }

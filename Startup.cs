@@ -32,6 +32,7 @@ namespace quoteme
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.Configure<MySqlOptions>(Configuration.GetSection("DBInfo"));
             services.AddMvc();
             services.AddDbContext<QuoteContext>(options => options.UseMySQL(Configuration["DBInfo:ConnectionString"]));
         }

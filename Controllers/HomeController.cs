@@ -20,7 +20,7 @@ namespace quoteme.Controllers
         [Route("")]
         public IActionResult Index()
         {
-            List<Quote> AllQuotes = _context.Quotes.Include(quote => quote.author).ToList();
+            List<Quote> AllQuotes = _context.Quotes.Include(quote => quote.author).Include(quote => quote.meta).Include(quote => quote.quote_cat).ToList();
             ViewBag.quotes = AllQuotes;
             return View();
         }
@@ -31,6 +31,8 @@ namespace quoteme.Controllers
         {
             List<Author> AllAuthors = _context.Authors.ToList();
             ViewBag.authors = AllAuthors;
+            List<Category> AllCategories = _context.Categories.ToList();
+            ViewBag.categories = AllCategories;
             return View(model);
         }
 
@@ -40,22 +42,33 @@ namespace quoteme.Controllers
         {
             if(ModelState.IsValid)
             {
+                Quote NewQuote = new Quote();
+                Author auth = _context.Authors.SingleOrDefault(author => author.authorid == model.authorid);
+                NewQuote.quote = model.Quote;
+                NewQuote.author = auth;
+
+                Meta NewMeta = new Meta();
+                NewMeta.notes = model.notes;
+                _context.Metas.Add(NewMeta);
+                _context.SaveChanges();
+                NewMeta = _context.Metas.Last();
+
+                NewQuote.meta = NewMeta;
+                _context.Quotes.Add(NewQuote);
+                _context.SaveChanges();
+                NewQuote = _context.Quotes.Last();
+                 
                 
-                Quote NewQuote = new Quote
-                {
-                    authorid = model.authorid,
-                    author = _context.Authors.SingleOrDefault(author => author.authorid == model.authorid),
-                    quote = model.Quote,
-                    created_at = DateTime.Now,
-                    updated_at = DateTime.Now,
-                };
-                _context.Add(NewQuote);
+                Quote_Category qcat = new Quote_Category();
+                Category katz = _context.Categories.SingleOrDefault(cate => cate.categoryid == model.categoryid);
+                qcat.quote = NewQuote;
+                qcat.quoteid = NewQuote.quoteid;
+                qcat.category = katz;
+                _context.Quotes_Categories.Add(qcat);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View("AddQuote");
-
-            // return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -67,6 +80,58 @@ namespace quoteme.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        [Route("addauthor")]
+        public IActionResult AddAuthor(CreateViewModel model)
+        {
+            List<Author> AllAuthors = _context.Authors.ToList();
+            ViewBag.authors = AllAuthors;
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("create_author")]
+        public IActionResult Create_Author(CreateAuthorViewModel model)
+        {
+            List<Author> AllAuthors;
+            // TryValidateModel(model);
+            if(ModelState.IsValid)
+            {
+                System.Console.WriteLine("Good writes!");
+                Author NewAuthor = new Author
+                {
+                    name = model.name,
+                    // quotes = new List<Quote>(),
+                    created_at = DateTime.Now,
+                    updated_at = DateTime.Now,
+                };
+                System.Console.WriteLine("name is {0}", NewAuthor.name);
+                _context.Authors.Add(NewAuthor);
+                _context.SaveChanges();
+                AllAuthors = _context.Authors.ToList();
+                ViewBag.authors = AllAuthors;
+                return RedirectToAction("AddAuthor");
+            } 
+            AllAuthors = _context.Authors.ToList();
+            ViewBag.authors = AllAuthors;
+            return View("AddAuthor");
+        }
+
+        // [HttpPost]
+        // [Route("create/category")]
+        // public IActionResult Create_Author(CreateAuthorViewModel model)
+        // {
+        //     if(ModelState.IsValid)
+        //     {
+        //         System.Console.WriteLine("Yah!!!");
+        //     }
+        //     else
+        //     {
+        //         System.Console.WriteLine("Nih!!!");
+        //     }
+        // }
+
         // public IActionResult About()
         // {
         //     ViewData["Message"] = "Your application description page.";
