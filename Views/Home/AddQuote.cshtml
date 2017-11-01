@@ -5,6 +5,7 @@
 <h2>@ViewData["Title"].</h2>
 <h3>@ViewData["Message"]</h3>
 
+<h4>Add a quote:</h4>
 <form asp-controller="Home" asp-action="create" method="POST">
     <label asp-for="authorid"></label>
     <select asp-for="authorid">
@@ -15,10 +16,32 @@
         }
     </select>
     <span asp-validation-for="authorid"></span>
-
     <label asp-for="Quote"></label>
     <input asp-for="Quote">
     <span asp-validation-for="Quote"></span>
+    <label asp-for="notes"></label>
+    <input asp-for="notes">
+    <label asp-for="categoryid"></label>
+    <select asp-for="categoryid">
+        @foreach(var category in @ViewBag.categories)
+        {
+            <option value="@category.categoryid">@category.name</option>
+            @category.categoryid
+        }
+    </select>
     <input type="submit" value="Submit">
 </form>
 
+<h4>Add an Author:</h4>
+
+<form asp-controller="Home" asp-action="create_author" method="POST">
+    <input type="text" name="name">
+    <input type="submit" value="Add Author">
+</form>
+
+<h4>Add a Category:</h4>
+
+<form asp-controller="Home" asp-action="create_category" method="POST">
+    <input type="text" name="catname">
+    <input type="submit" value="Add Category">
+</form>

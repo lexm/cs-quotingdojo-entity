@@ -10,7 +10,17 @@ namespace quoteme.Models
 
         [Display(Name = "Quote")]
         [Required]
-        [MinLength(5)]
+        // [MinLength(5)]
         public string Quote { get; set; }
+
+        [Display(Name = "notes")]
+        [Required]
+        [MinLength(5)]
+        public string notes { get; set; }
+
+        [Display(Name = "Category")]
+        [Required]
+        // [MinLength(5)]
+        public int categoryid { get; set; }
     }
 }

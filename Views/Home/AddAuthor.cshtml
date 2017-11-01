@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Add Author";
+}
+@model quoteme.Models.CreateViewModel
+<h2>@ViewData["Title"].</h2>
+<h3>@ViewData["Message"]</h3>
+
+<form asp-controller="Home" asp-action="create_author" method="POST">
+    <input type="text" name="name">
+    <input type="submit" value="Add Author">
+</form>
+<ul>
+    @foreach(var author in ViewBag.authors)
+    {
+        <li>@author.name</li>
+    }
+</ul>
