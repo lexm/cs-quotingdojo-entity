@@ -45,8 +45,9 @@ namespace quoteme
 
             if (env.IsDevelopment())
             {
+                loggerFactory.AddConsole();
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
+                // app.UseBrowserLink();
             }
             else
             {
