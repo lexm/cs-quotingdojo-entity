@@ -20,7 +20,7 @@ namespace quoteme.Controllers
         [Route("")]
         public IActionResult Index()
         {
-            List<Quote> AllQuotes = _context.Quotes.Include(quote => quote.author).Include(quote => quote.meta).Include(quote => quote.quote_cat).ToList();
+            List<Quote> AllQuotes = _context.quotes.Include(quote => quote.author).Include(quote => quote.meta).Include(quote => quote.quote_cat).ToList();
             ViewBag.quotes = AllQuotes;
             return View();
         }
@@ -29,9 +29,9 @@ namespace quoteme.Controllers
         [Route("addquote")]
         public IActionResult AddQuote(CreateViewModel model)
         {
-            List<Author> AllAuthors = _context.Authors.ToList();
+            List<Author> AllAuthors = _context.authors.ToList();
             ViewBag.authors = AllAuthors;
-            List<Category> AllCategories = _context.Categories.ToList();
+            List<Category> AllCategories = _context.categories.ToList();
             ViewBag.categories = AllCategories;
             return View(model);
         }
@@ -43,28 +43,28 @@ namespace quoteme.Controllers
             if(ModelState.IsValid)
             {
                 Quote NewQuote = new Quote();
-                Author auth = _context.Authors.SingleOrDefault(author => author.authorid == model.authorid);
+                Author auth = _context.authors.SingleOrDefault(author => author.authorid == model.authorid);
                 NewQuote.quote = model.Quote;
                 NewQuote.author = auth;
 
                 Meta NewMeta = new Meta();
                 NewMeta.notes = model.notes;
-                _context.Metas.Add(NewMeta);
+                _context.metas.Add(NewMeta);
                 _context.SaveChanges();
-                NewMeta = _context.Metas.Last();
+                NewMeta = _context.metas.Last();
 
                 NewQuote.meta = NewMeta;
-                _context.Quotes.Add(NewQuote);
+                _context.quotes.Add(NewQuote);
                 _context.SaveChanges();
-                NewQuote = _context.Quotes.Last();
+                NewQuote = _context.quotes.Last();
                  
                 
                 Quote_Category qcat = new Quote_Category();
-                Category katz = _context.Categories.SingleOrDefault(cate => cate.categoryid == model.categoryid);
+                Category katz = _context.categories.SingleOrDefault(cate => cate.categoryid == model.categoryid);
                 qcat.quote = NewQuote;
                 qcat.quoteid = NewQuote.quoteid;
                 qcat.category = katz;
-                _context.Quotes_Categories.Add(qcat);
+                _context.quotes_categories.Add(qcat);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -75,8 +75,8 @@ namespace quoteme.Controllers
         [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
-            Quote DeleteMe = _context.Quotes.SingleOrDefault(quote => quote.quoteid == id);
-            _context.Quotes.Remove(DeleteMe);
+            Quote DeleteMe = _context.quotes.SingleOrDefault(quote => quote.quoteid == id);
+            _context.quotes.Remove(DeleteMe);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -85,7 +85,7 @@ namespace quoteme.Controllers
         [Route("addauthor")]
         public IActionResult AddAuthor(CreateViewModel model)
         {
-            List<Author> AllAuthors = _context.Authors.ToList();
+            List<Author> AllAuthors = _context.authors.ToList();
             ViewBag.authors = AllAuthors;
             return View(model);
         }
@@ -107,13 +107,13 @@ namespace quoteme.Controllers
                     updated_at = DateTime.Now,
                 };
                 System.Console.WriteLine("name is {0}", NewAuthor.name);
-                _context.Authors.Add(NewAuthor);
+                _context.authors.Add(NewAuthor);
                 _context.SaveChanges();
-                AllAuthors = _context.Authors.ToList();
+                AllAuthors = _context.authors.ToList();
                 ViewBag.authors = AllAuthors;
                 return RedirectToAction("AddAuthor");
             } 
-            AllAuthors = _context.Authors.ToList();
+            AllAuthors = _context.authors.ToList();
             ViewBag.authors = AllAuthors;
             return View("AddAuthor");
         }
